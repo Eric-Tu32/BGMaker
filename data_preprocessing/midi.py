@@ -32,11 +32,11 @@ def midi_to_samples(fname):
             if msg.type == 'note_on':
                 if msg.velocity == 0: # 等於note_off
                     continue
-                note = msg.note - (128 - num_notes)/2 #midi有128個note，下縮到96個
+                note = msg.note - (128 - num_notes)/2 # midi有128個note，下縮到96個
                 assert(note >= 0 and note < num_notes)
                 if note not in all_notes: # 如果是新的note就放進all_note
                     all_notes[note] = []
-                else: #如果已經存在就封閉上一個最新的note
+                else: # 如果已經存在就封閉上一個最新的note
                     if len(all_notes[note][-1]) == 1:
                         all_notes[note][-1].append(all_notes[note][-1][0] + 1)
                 all_notes[note].append([(abs_time * samples_per_measure) // ticks_per_measure]) # append已過時間*96/1024*4，代表第幾個sample，可以把Sample當作新的時間單位
