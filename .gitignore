@@ -1,4 +1,7 @@
 __pycache__
 venv
 midi_data
+processed_midi_data
 checkpoints
+*.swo
+*.swp

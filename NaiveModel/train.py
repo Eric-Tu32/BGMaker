@@ -24,26 +24,6 @@ def save_model(model, optimizer, file_path):
     torch.save(state, file_path)
     print(f'checkpoint model saved to {file_path}')
 
-class DiceBCELoss(nn.Module):
-    def __init__(self, weight=None, size_average=True):
-        super(DiceBCELoss, self).__init__()
-
-    def forward(self, inputs, targets, smooth=1):
-        
-        #comment out if your model contains a sigmoid or equivalent activation layer
-        inputs = F.sigmoid(inputs)       
-        
-        #flatten label and prediction tensors
-        inputs = inputs.view(-1)
-        targets = targets.view(-1)
-        
-        intersection = (inputs * targets).sum()                            
-        dice_loss = 1 - (2.*intersection + smooth)/(inputs.sum() + targets.sum() + smooth)  
-        BCE = F.binary_cross_entropy(inputs, targets, reduction='mean')
-        Dice_BCE = 0.2*BCE + 0.8*dice_loss
-        
-        return Dice_BCE
-        
 def get_RP(predicted, targets):
     TP, FP, TN, FN = 0, 0, 0, 0
     for i in range(len(predicted)):
@@ -120,6 +100,7 @@ def train_model(model, train_loader, loss_func, optimizer, num_epochs=10, device
                 # Forward pass
                 inputs = x.float().unsqueeze(1)
                 outputs = model(inputs)
+
                 loss = loss_func(outputs, inputs)
 
                 # Backward pass
@@ -144,7 +125,7 @@ def train_model(model, train_loader, loss_func, optimizer, num_epochs=10, device
         
         if (1-avg_loss) > best_performance:
           print("New Best!")
-          checkpoint_filename = "/home/tbnrerk/mgen/checkpoints/Naive.pth"
+          checkpoint_filename = "/home/tbnrerk/mgen/checkpoints/Naive2.pth"
           save_model(model, optimizer, checkpoint_filename)
           best_performance = 1-avg_loss
         

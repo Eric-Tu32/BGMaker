@@ -15,19 +15,21 @@ class MidiDataset(Dataset):
     def __getitem__(self, idx):
         path = os.path.join(self.dir_path, self.data_dir[idx])
         try:
-            arr = np.load(path)[:384]
+            arr = np.load(path)
         except:
-            arr = np.load(os.path.join(self.dir_path, self.data_dir[0]))[:384]
+            arr = np.load(os.path.join(self.dir_path, self.data_dir[0]))
         return arr
 
 def get_train_loader(batch_size = 32):
-    dir = "midi_data"
+    dir = "/home/tbnrerk/mgen/processed_midi_data"
     ds = MidiDataset(dir)
     return DataLoader(ds, batch_size=batch_size, shuffle=True)
 
 if __name__=="__main__":
-    dir = "midi_data"
+    dir = "/home/tbnrerk/mgen/processed_midi_data"
     dataset = MidiDataset(dir)
+    for i in dataset:
+        print(i.shape)
     
     loader = DataLoader(dataset, batch_size=32, shuffle=True)
     for batch in loader:

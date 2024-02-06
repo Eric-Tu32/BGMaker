@@ -49,7 +49,11 @@ class NaiveVAE(nn.Module):
     
     self.encoder4 = ConvBlock(init_features*4, init_features*8)
     
+    self.encoder5 = ConvBlock(init_features*8, init_features*16)
+
     #decoder
+    self.decoder5 = UpConvBlock(init_features*16, init_features*8)
+
     self.decoder4 = UpConvBlock(init_features*8, init_features*4)
     
     self.decoder3 = UpConvBlock(init_features*4, init_features*2)
@@ -69,7 +73,11 @@ class NaiveVAE(nn.Module):
 
     x = self.encoder4(F.max_pool2d(x, kernel_size=kernel_size, stride=2))
     
+    x = self.encoder5(x)
+
     #decoder
+    x = self.decoder5(x)
+
     x = self.decoder4(F.interpolate(x, scale_factor=2, mode='bilinear'))
 
     x = self.decoder3(F.interpolate(x, scale_factor=2, mode='bilinear'))
@@ -84,7 +92,7 @@ def get_model(img_size = (384, 88)):
   return model
 
 if __name__ == "__main__":
-    x = torch.rand(32, 1, 384, 88)
+    x = torch.rand(32, 1, 1920, 88)
     model = get_model()
     output = model(x)
     print(output.shape)
